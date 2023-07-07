@@ -8,9 +8,7 @@ Version: V1
 
 # COMMAND ----------
 
-import boto3
-
-from pyspark.sql import functions as F
+import dlt
 
 # COMMAND ----------
 
@@ -30,17 +28,15 @@ KINESIS_DATA_STREAM = "data-stream"
 
 # COMMAND ----------
 
-data_sdf = (spark
-              .readStream
-              .format("kinesis")
-              .option("streamName", KINESIS_DATA_STREAM)
-              .option("region", KINESIS_REGION)
-              .option("initialPosition", 'earliest')
-              .option("awsAccessKey", dbutils.secrets.get(SCOPE_NAME, "aws_access_key_id"))
-              .option("awsSecretKey", dbutils.secrets.get(SCOPE_NAME, "aws_secret_access_key"))
-              .load()
-            )
-
-# COMMAND ----------
-
-data_sdf.display()
+@dlt.table(table_properties={"pipelines.reset.allowed": "false"})
+def kinesis_bronze():
+  return (spark
+          .readStream
+          .format("kinesis")
+          .option("streamName", KINESIS_DATA_STREAM)
+          .option("region", KINESIS_REGION)
+          .option("initialPosition", 'earliest')
+          .option("awsAccessKey", dbutils.secrets.get(SCOPE_NAME, "aws_access_key_id"))
+          .option("awsSecretKey", dbutils.secrets.get(SCOPE_NAME, "aws_secret_access_key"))
+          .load()
+        )
