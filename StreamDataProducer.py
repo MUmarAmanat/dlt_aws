@@ -12,7 +12,6 @@ import boto3
 import random as rnd
 import json
 
-from pyspark.sql import functions as F
 
 # COMMAND ----------
 
@@ -84,6 +83,20 @@ for ind, i in df.iterrows():
                 ) 
   except Exception as e:
     print(f"error occured {e}")
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### Create Destination Database if not exist
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE DATABASE IF NOT EXISTS dlt_aws 
 
 # COMMAND ----------
 
